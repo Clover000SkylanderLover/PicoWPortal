@@ -18,25 +18,27 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
-      - name: Install Compiler & CMake
+      - name: Install Compiler & Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y gcc-arm-none-eabi libnewlib-arm-none-eabi build-essential cmake
+          sudo apt-get install -y gcc-arm-none-eabi libnewlib-arm-none-eabi build-essential cmake ninja-build libstdc++-arm-none-eabi-newlib
 
       - name: Checkout Pico SDK
         uses: actions/checkout@v4
         with:
           repository: raspberrypi/pico-sdk
           path: pico-sdk
-          submodules: true
+          submodules: recursive
 
       - name: Build UF2 File
         run: |
           export PICO_SDK_PATH=$GITHUB_WORKSPACE/pico-sdk
           export BOARD=pico_w
           cmake -DWIFI_SSID="${{ inputs.wifi_ssid }}" -DWIFI_PASSWORD="${{ inputs.wifi_password }}" -B ./build
-          cmake --build ./build
+          cmake --build ./build --config Release
 
       - name: Upload UF2 Artifact
         uses: actions/upload-artifact@v4
