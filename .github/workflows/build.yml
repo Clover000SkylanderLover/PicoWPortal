@@ -1,0 +1,45 @@
+name: Build PicoWPortal
+
+on:
+  workflow_dispatch:
+    inputs:
+      wifi_ssid:
+        description: 'Wi-Fi Network Name (SSID)'
+        required: true
+        type: string
+      wifi_password:
+        description: 'Wi-Fi Password'
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Install Compiler & CMake
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-arm-none-eabi libnewlib-arm-none-eabi build-essential cmake
+
+      - name: Checkout Pico SDK
+        uses: actions/checkout@v3
+        with:
+          repository: raspberrypi/pico-sdk
+          path: pico-sdk
+          submodules: true
+
+      - name: Build UF2 File
+        run: |
+          export PICO_SDK_PATH=$GITHUB_WORKSPACE/pico-sdk
+          export BOARD=pico_w
+          cmake -DWIFI_SSID="${{ inputs.wifi_ssid }}" -DWIFI_PASSWORD="${{ inputs.wifi_password }}" -B ./build
+          cmake --build ./build
+
+      - name: Upload UF2 Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: PicoWPortal-UF2
+          path: build/PicoWPortal.uf2
