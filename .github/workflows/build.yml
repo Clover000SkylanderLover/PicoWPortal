@@ -18,8 +18,6 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-        with:
-          submodules: recursive
 
       - name: Install Compiler & Dependencies
         run: |
@@ -35,9 +33,7 @@ jobs:
 
       - name: Build UF2 File
         run: |
-          export PICO_SDK_PATH=$GITHUB_WORKSPACE/pico-sdk
-          export BOARD=pico_w
-          cmake -DWIFI_SSID="${{ inputs.wifi_ssid }}" -DWIFI_PASSWORD="${{ inputs.wifi_password }}" -B ./build
+          cmake -DPICO_SDK_PATH=$GITHUB_WORKSPACE/pico-sdk -DBOARD=pico_w -DWIFI_SSID="${{ inputs.wifi_ssid }}" -DWIFI_PASSWORD="${{ inputs.wifi_password }}" -B ./build
           cmake --build ./build --config Release
 
       - name: Upload UF2 Artifact
