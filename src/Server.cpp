@@ -78,6 +78,20 @@ void Server::Initialize()
         "POST",
         SetFigureRoute
     };
+
+    routes[5] = {
+        "^/$",
+        "GET",
+        IndexRoute
+    };
+}
+
+err_t Server::IndexRoute(HttpRequest*)
+{
+    std::string html = "<!DOCTYPE html><html><head><title>PicoWPortal</title></head><body><h1>PicoWPortal is Online!</h1><p>The server is working successfully.</p></body></html>";
+    std::string data = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: " + std::to_string(html.length()) + "\r\n" + headers + "\r\n" + html;
+    
+    return tcp_write(client_pcb, data.c_str(), data.length(), TCP_WRITE_FLAG_COPY);
 }
 
 err_t Server::InfoRoute(HttpRequest*)
