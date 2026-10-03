@@ -41,6 +41,7 @@ public:
     static HttpRequest ParseHttpRequest(char* request);
     static err_t RequestRoute(HttpRequest*);
 
+    static err_t IndexRoute(HttpRequest*);
     static err_t InfoRoute(HttpRequest*);
     static err_t StatusRoute(HttpRequest*);
     static err_t ClearFigureRoute(HttpRequest*);
