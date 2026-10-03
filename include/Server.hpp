@@ -7,7 +7,7 @@
 #include "Portal.hpp"
 #include <regex>
 
-#define ROUTE_COUNT 5
+#define ROUTE_COUNT 6
 
 struct HttpRequest {
     std::string method;
